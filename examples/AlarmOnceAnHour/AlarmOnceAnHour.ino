@@ -15,6 +15,7 @@ void setup() {
   // Register an alarm on minute #1, ignoring the Day, DayOfWeek (NO_ALARM), and Hour fields.
   rtc.attachScheduledInterrupt(-1, NO_ALARM, -1, 1, flagTick);
   Serial.println("Waiting for alarm to go off...");
+  Serial.println("(should take 1 minute from start of sketch)");
 }
 
 volatile boolean tick = false;
