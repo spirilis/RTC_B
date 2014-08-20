@@ -1,0 +1,44 @@
+# Syntax coloring map for RTC_B
+
+# Datatypes (KEYWORD1)
+RTC_B	KEYWORD1
+
+# Methods and Functions (KEYWORD2)
+setDOW	KEYWORD2
+setMonth	KEYWORD2
+setDay	KEYWORD2
+setYear	KEYWORD2
+setHour	KEYWORD2
+setMinute	KEYWORD2
+setSecond	KEYWORD2
+getDOW	KEYWORD2
+getMonth	KEYWORD2
+getDay	KEYWORD2
+getYear	KEYWORD2
+getHour	KEYWORD2
+getMinute	KEYWORD2
+getSecond	KEYWORD2
+getTime	KEYWORD2
+getTimeString	KEYWORD2
+setTimeStringFormat	KEYWORD2
+attachPeriodicInterrupt	KEYWORD2
+detachPeriodicInterrupt	KEYWORD2
+attachScheduledInterrupt	KEYWORD2
+detachScheduledInterrupt	KEYWORD2
+
+# Setup and loop functions (KEYWORD3)
+begin	KEYWORD3
+end	KEYWORD3
+save	KEYWORD3
+restore	KEYWORD3
+restoreFromBuffer	KEYWORD3
+
+# Constants (LITERAL1)
+NO_ALARM	LITERAL1
+MONDAY	LITERAL1
+TUESDAY	LITERAL1
+WEDNESDAY	LITERAL1
+THURSDAY	LITERAL1
+FRIDAY	LITERAL1
+SATURDAY	LITERAL1
+SUNDAY	LITERAL1
