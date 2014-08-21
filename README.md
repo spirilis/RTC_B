@@ -185,7 +185,7 @@ The RTC\_B peripheral allows two types of interrupts; A single scheduled-event a
 The *scheduled-event alarm* is an alarm which runs at a specified time based on an optional combination of Day-of-Week,
 Day, Hour and Minute information.  Any one of these metrics may be used, and multiple metrics may be combined.  For example,
 to set an alarm that kicks off at 9:00AM every Monday, setting the Day-of-Week metric to MONDAY and Hour metric to 9 would
-enable this behavior.  But leaving the Day-of-Week metric cleared (as NOT\_AN\_ALARM) would enable an alarm that kicks off
+enable this behavior.  But leaving the Day-of-Week metric cleared (as NO\_ALARM) would enable an alarm that kicks off
 at 9:00AM every day of the week.
 
 There are two types of periodic ticks; one that is capable of kicking off from as often as 64 times a second to as infrequent
@@ -201,7 +201,7 @@ supplying the pointer to the function to `.detachPeriodicInterrupt()`.
 `rtc.attachScheduledInterrupt(int day, RTC_DOW dayofweek, int hour, int min, RTC_INTERRUPT_HANDLER userFunc)`  
 This configures the Alarm interrupt.  Any options which are specified with -1 are disincluded in the alarm definition
 (their associated **AE** bit, i.e. Alarm Enable bit, is cleared so the alarm subsystem doesn't include them in its
-criteria).  The disinclusion keyword for dayofweek is NOT\_AN\_ALARM.  The *userFunc* argument is a simple void func(void) callback.
+criteria).  The disinclusion keyword for dayofweek is NO\_ALARM.  The *userFunc* argument is a simple void func(void) callback.
 * __Arguments:__ Date/time metrics as explained above along with a pointer to a user callback function.
 * __Returns:__ True if no prior alarm was configured, false if an alarm was already configured.
 
