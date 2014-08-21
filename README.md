@@ -111,13 +111,13 @@ representation using the `.getTimeString()` variations of functions.  The string
 `rtc.setTimeStringFormat(use_24hr, use_shortwords, day_before_month, short_date_notation, include_seconds)`  
 Note- All arguments are in **boolean** format.  This function tunes the rules used to produce string-based time output
 when using the `.getTimeString()` functions.
-*use_24hr* denotes the use of military time (24-hour) vs. 12-hour AM/PM representation.
-*use_shortwords* denotes the use of 3-letter words for day-of-week and month, e.g. Wed, Sat, Mar, Nov, Dec.
-*day_before_month* denotes the printing of day before month, ala European-style (e.g. 30/6/2014 for June 30).
+* __Arguments:__ As follows-
+* *use_24hr* denotes the use of military time (24-hour) vs. 12-hour AM/PM representation.
+* *use_shortwords* denotes the use of 3-letter words for day-of-week and month, e.g. Wed, Sat, Mar, Nov, Dec.
+* *day_before_month* denotes the printing of day before month, ala European-style (e.g. 30/6/2014 for June 30).
 American style has this turned off (e.g. 6/30/2014).
-*short_date_notation* denotes the use of slash-based numeric dates, i.e. "6/30/2014" instead of "Monday, June 30 2014"
-*include_seconds* denotes the inclusion of the seconds field in the timefield, i.e. "5:30:59" instead of "5:30".
-* __Arguments:__ Several boolean parameters as explained above
+* *short_date_notation* denotes the use of slash-based numeric dates, i.e. "6/30/2014" instead of "Monday, June 30 2014"
+* *include_seconds* denotes the inclusion of the seconds field in the timefield, i.e. "5:30:59" instead of "5:30".
 * __Returns:__ Nothing
 
 
