@@ -17,6 +17,19 @@ This library supports *1/second* down to *1/16384-second* ticks using the attach
 
 A single instance of the library's class is predefined for you; it is called `rtc`.
 
+Some of the functions deal with a __Time Buffer__ format, which is a packed 8-byte binary sequence that can
+store the date & time.  The exact format of this buffer is as follows:
+* Bytes 0-1: Year, in Little-Endian 16-bit unsigned integer format
+* Byte 2: Day of Week (0-6, 0 = MONDAY, 6 = SUNDAY)
+* Byte 3: Month (1-12)
+* Byte 4: Day (1-31)
+* Byte 5: Hour (0-23)
+* Byte 6: Minute (0-59)
+* Byte 7: Second (0-59)
+
+This format is useful for storing date/timestamp information in an in-memory or in-FRAM database, and you
+can arbitrarily print 8-byte time buffers to text using the 2-argument variation of `.getTimeString()`.
+
 ## Initialization & Configuration
 
 Always use `rtc.begin()` or its long variant to initialize the RTC before doing anything else with it.
