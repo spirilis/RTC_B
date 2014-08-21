@@ -47,7 +47,7 @@ i.e.: _rtc.debug(&Serial)_
 `rtc.save()`  
 Save the current date & time into a FRAM-backed buffer.  This can be restored later after a reset or power cycle with
 the _rtc.restore()_ function.  Note this function reads from the RTC, which means it may introduce a busy-wait delay while
-the *RTCCTL1* bit *RTCRDY* is cleared if the RTC was accessed during its asynchronous-update period.
+the **RTCCTL1** bit **RTCRDY** is cleared if the RTC was accessed during its asynchronous-update period.
 * __Arguments:__ None
 * __Returns:__ Nothing
 
@@ -108,6 +108,10 @@ You may extract the time information either in __Time Buffer__ format using `.ge
 representation using the `.getTimeString()` variations of functions.  The string format is tunable using the
 `.setTimeStringFormat()` function.
 
+Please note- All Time Getting functions may cause a busy-wait to be performed if the MCU attempts to read the RTC registers
+during the short once-a-second period when **RTCCTL1**'s **RTCRDY** bit is cleared.  The function will pause until the **RTCRDY**
+bit is re-set.
+
 `rtc.setTimeStringFormat(use_24hr, use_shortwords, day_before_month, short_date_notation, include_seconds)`  
 Note- All arguments are in **boolean** format.  This function tunes the rules used to produce string-based time output
 when using the `.getTimeString()` functions.
@@ -121,3 +125,104 @@ American style has this turned off (e.g. 6/30/2014).
 * __Returns:__ Nothing
 
 
+`rtc.getTime(uint8_t *buf)`  
+Pull the current RTC date & time info and store it in an 8-byte buffer located at _\*buf_.  This is stored in
+_Time Buffer_ format.
+* __Arguments:__ Pointer to unsigned 8-bit integer buffer containing at least 8 bytes
+* __Returns:__ Length of data written (always returns 8).
+
+`rtc.getTimeString(char *buf)`  
+Pull the current RTC date & time info and store it in textual format, based on the rules tuned via
+`.setTimeStringFormat()`, in the character buffer located at _\*buf_.
+* __Arguments:__ Pointer to character buffer of suitable size
+* __Returns:__ strlen(buf) after the function is done.
+
+`rtc.getTimeString(char *buf, const uint8_t *timebuf)`  
+A companion to `.getTimeString()` above, but allows you to generate a textual representation of any arbitrary
+date/time spec in _Time Buffer_ format, for example timestamps logged in an in-FRAM or in-memory table or database.
+* __Arguments:__ Pointer to character buffer, Pointer to an 8-byte unsigned 8-bit integer time buffer
+* __Returns:__ strlen(buf) after the function is done.
+
+`rtc.getDOW()`  
+Return current day of week in *RTC_DOW* enum format.
+* __Arguments:__ None
+* __Returns:__ Day of week
+
+`rtc.getMonth()`  
+Return current month in unsigned integer format.
+* __Arguments:__ None
+* __Returns:__ Month (1-12)
+
+`rtc.getDay()`  
+Return current day in unsigned integer format.
+* __Arguments:__ None
+* __Returns:__ Day (1-31)
+
+`rtc.getYear()`  
+Return current year in unsigned integer format.
+* __Arguments:__ None
+* __Returns:__ Year (0000-4095)
+
+`rtc.getHour()`  
+Return current hour in unsigned integer format.
+* __Arguments:__ None
+* __Returns:__ Hour (0-23)
+
+`rtc.getMinute()`  
+Return current minute in unsigned integer format.
+* __Arguments:__ None
+* __Returns:__ Minute (0-59)
+
+`rtc.getSecond()`  
+Return current seconds field in unsigned integer format.
+* __Arguments:__ None
+* __Returns:__ Seconds (0-59)
+
+## Interrupts
+
+The RTC\_B peripheral allows two types of interrupts; A single scheduled-event alarm, and periodic ticks.
+
+The *scheduled-event alarm* is an alarm which runs at a specified time based on an optional combination of Day-of-Week,
+Day, Hour and Minute information.  Any one of these metrics may be used, and multiple metrics may be combined.  For example,
+to set an alarm that kicks off at 9:00AM every Monday, setting the Day-of-Week metric to MONDAY and Hour metric to 9 would
+enable this behavior.  But leaving the Day-of-Week metric cleared (as NOT\_AN\_ALARM) would enable an alarm that kicks off
+at 9:00AM every day of the week.
+
+There are two types of periodic ticks; one that is capable of kicking off from as often as 64 times a second to as infrequent
+as once a second.  (Actually, it can kick off once every 2 seconds, but for simplicity this library doesn't support that).
+
+The other periodic tick kicks off as frequent as 16384 times a second to as infrequent as 128 times a second.
+
+Both are configured with the same `.attachPeriodicInterrupt()` function, but the RTCPS IRQ used to service the interrupt
+is chosen based on your specified divider.  Only one function may be registered to a particular RTCPS interrupt at a time;
+any attempts to add more interrupt functions will fail (returning _false_).  Interrupt functions may be deactivated by
+supplying the pointer to the function to `.detachPeriodicInterrupt()`.
+
+`rtc.attachScheduledInterrupt(int day, RTC_DOW dayofweek, int hour, int min, RTC_INTERRUPT_HANDLER userFunc)`  
+This configures the Alarm interrupt.  Any options which are specified with -1 are disincluded in the alarm definition
+(their associated **AE** bit, i.e. Alarm Enable bit, is cleared so the alarm subsystem doesn't include them in its
+criteria).  The disinclusion keyword for dayofweek is NOT\_AN\_ALARM.  The *userFunc* argument is a simple void func(void) callback.
+* __Arguments:__ Date/time metrics as explained above along with a pointer to a user callback function.
+* __Returns:__ True if no prior alarm was configured, false if an alarm was already configured.
+
+`rtc.detachScheduledInterrupt()`  
+Deactivate the Alarm, if one was set.
+* __Arguments:__ None
+* __Returns:__ True if an alarm was previously set (and is now deactivated), false if no alarm was set.
+
+`rtc.attachPeriodicInterrupt(unsigned int divider, RTC_INTERRUPT_HANDLER userFunc)`  
+This configures one of the RTCPS IRQs to kick off the *userFunc* callback every 1/**divider** seconds.
+Take note up above that there are 2 available IRQs that may be configured here; attempting to register an
+interrupt on a divider handled by the RTCPS IRQ handling an existing interrupt will result in this function
+returning *false* and nothing happening.  Also note the divider is treated as a single-binary-digit number whose
+value is equal to the highest bit# set.  For example, 16384 is interpreted as 16384, but 16383 is interpreted as 8192
+since the highest bit set in the number 16383 is the 13th bit (8192).  Likewise, 129 is treated as 128, and 260 is treated
+as 256.
+* __Arguments:__ Period specification as divider applied to 1 second, plus the user callback function
+* __Returns:__ True if no prior interrupt was configured for the requisite RTCPS IRQ, false if one was already configured for that RTCPS IRQ.
+
+`rtc.detachPeriodicInterrupt(RTC_INTERRUPT_HANDLER userFunc)`  
+Search the RTCPS IRQ handlers for a configured interrupt whose callback function is equal to *userFunc*.  If one is
+found, deconfigure that RTCPS IRQ.  If not, return *false*.
+* __Arguments:__ Pointer to user callback function
+* __Returns:__ True if an RTCPS IRQ was found configured to be handled by the specified userFunc, false if not.
