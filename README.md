@@ -15,6 +15,8 @@ periodic IRQs, and RTCPS1 supports 2/second, 1/second and 1/2-1/64-second period
 
 This library supports *1/second* down to *1/16384-second* ticks using the attachPeriodicInterrupt() feature.
 
+A single instance of the library's class is predefined for you; it is called `rtc`.
+
 ## Initialization & Configuration
 
 Always use `rtc.begin()` or its long variant to initialize the RTC before doing anything else with it.
@@ -189,14 +191,13 @@ enable this behavior.  But leaving the Day-of-Week metric cleared (as NO\_ALARM)
 at 9:00AM every day of the week.
 
 There are two types of periodic ticks; one that is capable of kicking off from as often as 64 times a second to as infrequent
-as once a second.  (Actually, it can kick off once every 2 seconds, but for simplicity this library doesn't support that).
-
-The other periodic tick kicks off as frequent as 16384 times a second to as infrequent as 128 times a second.
+as once a second (Actually, it can kick off once every 2 seconds, but for simplicity this library doesn't support that),
+and one that kicks off as frequent as 16384 times a second to as infrequent as 128 times a second.
 
 Both are configured with the same `.attachPeriodicInterrupt()` function, but the RTCPS IRQ used to service the interrupt
 is chosen based on your specified divider.  Only one function may be registered to a particular RTCPS interrupt at a time;
 any attempts to add more interrupt functions will fail (returning _false_).  Interrupt functions may be deactivated by
-supplying the pointer to the function to `.detachPeriodicInterrupt()`.
+supplying the pointer to the user callback function to `.detachPeriodicInterrupt()`.
 
 `rtc.attachScheduledInterrupt(int day, RTC_DOW dayofweek, int hour, int min, RTC_INTERRUPT_HANDLER userFunc)`  
 This configures the Alarm interrupt.  Any options which are specified with -1 are disincluded in the alarm definition
@@ -226,3 +227,20 @@ Search the RTCPS IRQ handlers for a configured interrupt whose callback function
 found, deconfigure that RTCPS IRQ.  If not, return *false*.
 * __Arguments:__ Pointer to user callback function
 * __Returns:__ True if an RTCPS IRQ was found configured to be handled by the specified userFunc, false if not.
+
+## Library Examples
+
+The RTC\_B library includes several examples I put together in order to test and validate the functionality of the
+library, as well as show off its features.
+
+* __PrintOncePerSecond__ configures the RTC with `.begin()` to a zero time/datestamp and then attaches a periodic
+interrupt that fires once a second to trigger a flag variable which signals loop() to print out a "Tick".
+* __UseBothPeriodicInterrupts__ is similar to _PrintOncePerSecond_, but it runs a second periodic interrupt that kicks
+off once every 1/256th of a second to print out a simple dot (".") in parallel with the periodic "Tick!" message.
+* __AlarmOnceAnHour__ configures the RTC with `.begin()` to a zero time/datestamp and then adds an alarm that kicks off
+1 minute after the hour; so about 1 minute into the sketch, the alarm should go off, and it should go off every hour
+after that.
+* __SaveAcrossResets__ tests the `.save()` and `.restore()` concept available on the TI MSP430 Wolverine FRAM chips.  This
+periodically prints a tick (once a second), but also issues the `rtc.save()` during that tick.  Upon reset, the `setup()` function
+attempts to use `rtc.restore()` to restore the date/timestamp information, instead setting it to a hardcoded set of values
+if that fails (as it always will the first time the sketch is run after upload).
