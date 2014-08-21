@@ -29,6 +29,9 @@ store the date & time.  The exact format of this buffer is as follows:
 
 This format is useful for storing date/timestamp information in an in-memory or in-FRAM database, and you
 can arbitrarily print 8-byte time buffers to text using the 2-argument variation of `.getTimeString()`.
+Note this buffer should always start on an even-memory-address boundary, as the MSP430 will attempt to
+cast the first 2 bytes as an unsigned integer, which won't work correctly if the buffer begins on an odd-numbered
+memory address.
 
 ## Initialization & Configuration
 
