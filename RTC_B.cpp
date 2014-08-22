@@ -546,16 +546,13 @@ void rtcb_Interrupt_Vector(void)
 
     switch (RTCIV) {
         case RTCIV_RTCAIFG:
-            if (_rtcb_alarmHandler != NULL)
-                _rtcb_alarmHandler();
+            _rtcb_alarmHandler();
             break;
         case RTCIV_RT0PSIFG:
-            if (_rtcb_prescaleHandlers[0] != NULL)
-                _rtcb_prescaleHandlers[0]();
+            _rtcb_prescaleHandlers[0]();
             break;
         case RTCIV_RT1PSIFG:
-            if (_rtcb_prescaleHandlers[1] != NULL)
-                _rtcb_prescaleHandlers[1]();
+            _rtcb_prescaleHandlers[1]();
             break;
     }
 
