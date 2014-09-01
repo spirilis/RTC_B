@@ -245,9 +245,9 @@ unsigned int RTC_B::getTimeString(char *outbuf, const uint8_t *timebuf)
     }
     // Add HH:MM[:SS] and return
     if (string_fmt_bits & RTC_B_STRINGFMT_BIT_USE24HR) {
-        itoa(timebuf[5] > 12 ? timebuf[5] - 12 : timebuf[5], tmp, 10);
-    } else {
         itoa(timebuf[5], tmp, 10);
+    } else {
+        itoa(timebuf[5] > 12 ? timebuf[5] - 12 : timebuf[5], tmp, 10);
     }
     strcat(outbuf, tmp);
     strcat(outbuf, ":");
