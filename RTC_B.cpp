@@ -269,7 +269,7 @@ unsigned int RTC_B::getTimeString(char *outbuf, const uint8_t *timebuf)
     }
 
     if ( !(string_fmt_bits & RTC_B_STRINGFMT_BIT_USE24HR) ) {
-        if (timebuf[5] > 12) {
+        if (timebuf[5] >= 12) {
             strcat(outbuf, " PM");
         } else {
             strcat(outbuf, " AM");
