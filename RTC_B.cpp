@@ -247,7 +247,7 @@ unsigned int RTC_B::getTimeString(char *outbuf, const uint8_t *timebuf)
     if (string_fmt_bits & RTC_B_STRINGFMT_BIT_USE24HR) {
         itoa(timebuf[5] > 0 ? timebuf[5] : 12, tmp, 10);
     } else {
-        itoa(timebuf[5] >= 12 ? timebuf[5] == 12 ? 12 : timebuf[5] - 12 : timebuf[5], tmp, 10);
+        itoa(timebuf[5] >= 12 ? timebuf[5] == 12 ? 12 : timebuf[5] - 12 : timebuf[5] == 0 ? 12 : timebuf[5], tmp, 10);
     }
     strcat(outbuf, tmp);
     strcat(outbuf, ":");
