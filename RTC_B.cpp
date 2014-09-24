@@ -38,8 +38,12 @@ void RTC_B::_rtcrdy_semaphore()
         ;
 }
 
-void RTC_B::begin()
+boolean RTC_B::begin()
 {
+    #ifdef __MSP430_HAS_CS__
+    if (CSCTL5 & LFXTOFFG)
+        return false;
+    #endif
     RTCCTL0 = 0x00;
     RTCCTL1 = RTCHOLD_H;
     RTCCTL2 = 0x00;
@@ -59,12 +63,17 @@ void RTC_B::begin()
     RTCPS1CTL = RT1IP__256;
     RTCPS = 0;
     RTCCTL1 &= ~RTCHOLD_H;
+    return true;
 }
 
-void RTC_B::begin(RTC_DOW dow, unsigned int month, unsigned int day,
+boolean RTC_B::begin(RTC_DOW dow, unsigned int month, unsigned int day,
                   unsigned int year, unsigned int hour, unsigned int minute,
                   unsigned int second)
 {
+    #ifdef __MSP430_HAS_CS__
+    if (CSCTL5 & LFXTOFFG)
+        return false;
+    #endif
     RTCCTL0 = 0x00;
     RTCCTL1 = RTCHOLD_H;
     RTCCTL2 = 0x00;
@@ -84,6 +93,7 @@ void RTC_B::begin(RTC_DOW dow, unsigned int month, unsigned int day,
     RTCPS1CTL = RT1IP__256;
     RTCPS = 0;
     RTCCTL1 &= ~RTCHOLD_H;
+    return true;
 }
 
 void RTC_B::setDOW(RTC_DOW dow)

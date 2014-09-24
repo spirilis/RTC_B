@@ -44,8 +44,8 @@ class RTC_B {
     public:
         RTC_B();
 
-        void begin(void);
-        void begin(RTC_DOW dow, unsigned int month, unsigned int day, unsigned int year, unsigned int hour, unsigned int minute, unsigned int second);
+        boolean begin(void);
+        boolean begin(RTC_DOW dow, unsigned int month, unsigned int day, unsigned int year, unsigned int hour, unsigned int minute, unsigned int second);
         void end(void);
         void debug(Stream *);
 
