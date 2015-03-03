@@ -42,13 +42,13 @@ This is required to put the RTC in a known state.
 Initialize RTC to a known state, with all date & time counters set to 0 (January 1, 0000 at 00:00:00).
 Upon exit, the RTC will begin counting.  All alarms and prescaler IRQs will be disabled & parameters cleared.
 * __Arguments:__ None
-* __Returns:__ Nothing
+* __Returns:__ boolean (true/false) indicating whether LFXT1 is functional (true) or faulted (false)
 
 `rtc.begin(RTC_DOW dow, unsigned int month, unsigned int day, unsigned int year, unsigned int hour, unsigned int minute, unsigned int second)`  
 Initialize RTC to a known state but with all date & time counters preinitialized to the specified arguments.
 The __RTC_DOW__ argument is an enum which takes keywords MONDAY, TUESDAY, WEDNESDAY, etc.
 * __Arguments:__ Day of Week, Month (1-12), Day (1-31), Year (0000-4095), Hour (0-23), Minute (0-59), Second (0-59)
-* __Returns:__ Nothing
+* __Returns:__ boolean (true/false) indicating whether LFXT1 is functional (true) or faulted (false)
 
 `rtc.end()`  
 Disables the RTC (sets __RTCHOLD__) and shuts off all the interrupt handlers.
