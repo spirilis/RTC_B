@@ -211,7 +211,6 @@ static const char *rtc_month_short[] = {
 
 unsigned int RTC_B::getTimeString(char *outbuf, const uint8_t *timebuf)
 {
-    int i;
     char tmp[16];
 
     outbuf[0] = '\0';
@@ -468,6 +467,8 @@ boolean RTC_B::attachScheduledInterrupt(int day, RTC_DOW dow, int hour, int min,
     _rtcb_alarmHandler = userFunc;
     RTCCTL0 &= ~RTCAIFG;
     RTCCTL0 |= RTCAIE;
+
+    return true;
 }
 
 boolean RTC_B::detachScheduledInterrupt()
