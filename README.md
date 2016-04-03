@@ -219,6 +219,8 @@ supplying the pointer to the user callback function to `.detachPeriodicInterrupt
 This configures the Alarm interrupt.  Any options which are specified with -1 are disincluded in the alarm definition
 (their associated **AE** bit, i.e. Alarm Enable bit, is cleared so the alarm subsystem doesn't include them in its
 criteria).  The disinclusion keyword for dayofweek is NO\_ALARM.  The *userFunc* argument is a simple void func(void) callback.
+You may use *wakeup()* to signal Energia to wake the CPU upon exiting *userFunc* to support LPM3, sleep() or sleepSeconds()
+functionality.
 * __Arguments:__ Date/time metrics as explained above along with a pointer to a user callback function.
 * __Returns:__ True if no prior alarm was configured, false if an alarm was already configured.
 
@@ -234,7 +236,8 @@ interrupt on a divider handled by the RTCPS IRQ handling an existing interrupt w
 returning *false* and nothing happening.  Also note the divider is treated as a single-binary-digit number whose
 value is equal to the highest bit# set.  For example, 16384 is interpreted as 16384, but 16383 is interpreted as 8192
 since the highest bit set in the number 16383 is the 13th bit (8192).  Likewise, 129 is treated as 128, and 260 is treated
-as 256.
+as 256.  Within the function, you may use *wakeup()* to signal Energia to wake the CPU upon exiting *userFunc* to
+support LPM3, sleep() or sleepSeconds() functionality.
 * __Arguments:__ Period specification as divider applied to 1 second, plus the user callback function
 * __Returns:__ True if no prior interrupt was configured for the requisite RTCPS IRQ, false if one was already configured for that RTCPS IRQ.
 

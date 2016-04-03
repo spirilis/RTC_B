@@ -51,4 +51,6 @@ void flagTick()
 {
   tick = true;
   rtc.save();  // Commit RTC info to FRAM automatically so it's restored upon RESET
+  wakeup(); // not necessary but included for example; use if this tick should wake CPU up from
+            // LPM3, sleep() or sleepSeconds()
 }

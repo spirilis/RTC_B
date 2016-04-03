@@ -31,4 +31,5 @@ void loop() {
 void flagTick()
 {
   tick = true;
+  wakeup(); // Not necessary here but use this if tick function wakes CPU from LPM3, sleep() or sleepSeconds()
 }

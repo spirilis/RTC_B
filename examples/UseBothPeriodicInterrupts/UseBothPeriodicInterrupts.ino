@@ -59,9 +59,13 @@ void loop() {
 void flagTick()
 {
   tick = true;
+  wakeup(); // only required to wake CPU from LPM3, sleep() or sleepSeconds()
+  // The use of wakeup() isn't necessary for this example since our loop() has us running in a busy-wait without
+  // any low-power sleep modes.
 }
 
 void flagFastTick()
 {
   fasttick = true;
+  wakeup();
 }
