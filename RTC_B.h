@@ -29,13 +29,13 @@
 typedef enum RTC_DOW
 {
   NO_ALARM = -1,
+  SUNDAY,
   MONDAY,
   TUESDAY,
   WEDNESDAY,
   THURSDAY,
   FRIDAY,
-  SATURDAY,
-  SUNDAY
+  SATURDAY
 } RTC_DOW;
 
 typedef void(*RTC_INTERRUPT_HANDLER)(void);
